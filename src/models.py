@@ -1,29 +1,41 @@
 import os
 import sys
 from sqlalchemy.orm import declarative_base, Mapped, mapped_column
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, Boolean, String, ForeignKey
 from eralchemy2 import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
+class User(Base):
+    __tablename__ = "user"
     id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(nullable=False)
+    email: Mapped[str] = mapped_column(unique=True, nullable=True)
+    username: Mapped[str] = mapped_column(nullable=False)
+    firstname: Mapped[str] = mapped_column(nullable=False)
+    lastname: Mapped[str] = mapped_column(nullable=False)
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
+class Post(Base):
+    __tablename__ = "post"
     id: Mapped[int] = mapped_column(primary_key=True)
-    street_name: Mapped[str]
-    street_number: Mapped[str]
-    post_code: Mapped[str] = mapped_column(nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
 
-    def to_dict(self):
-        return {}
+class Media(Base):
+    __tablename__ = "media"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    type: Mapped[str] = mapped_column(nullable=True)
+    true: Mapped[str] = mapped_column(nullable=True)
+    post_id: Mapped[int] = mapped_column(nullable=True)
+
+class Comment(Base):
+    __tablename__ = "comment"
+    id: Mapped[int] = mapped_column(primary_key=True)
+    comment_text: Mapped[str]=mapped_column(nullable=True)
+    post_id: Mapped[int] = mapped_column(nullable=True)
+    author_id: Mapped[int] = mapped_column(nullable=True)
+
+
+    
+
 
 ## Draw from SQLAlchemy base
 try:
